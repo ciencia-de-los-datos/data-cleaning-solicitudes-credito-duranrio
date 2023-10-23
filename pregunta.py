@@ -13,16 +13,23 @@ import pandas as pd
 def clean_data():
 
     df = pd.read_csv("solicitudes_credito.csv", sep=";",index_col=0)
+
     df.dropna(inplace=True)
     
-    df['fecha_de_beneficio'] = pd.to_datetime(df['fecha_de_beneficio'],format="mixed",dayfirst=True)
-    df['monto_del_credito'] = df['monto_del_credito'].astype(float)
+    columns = ["sexo", "tipo_de_emprendimiento", "idea_negocio","barrio","línea_credito"]
+    for col in columns:
+        df[col]=df[col].str.lower()
+        df[col] = df[col].apply(lambda x: str(x).replace("-"," ").replace("_"," "))
     
-    df.loc[:, df.dtypes=='object']=df.loc[:, df.dtypes=='object'].apply(lambda row: row.str.lower())
-    df=df.apply(lambda x: x.astype(str).str.replace("-"," ").str.replace("_"," ").str.replace("$","").str.replace(",",""))
- 
+    df["monto_del_credito"] = df["monto_del_credito"].apply(lambda x: str(x).strip("$").strip().replace(".00","").replace(",",""))
+
+    
+    df.fecha_de_beneficio = pd.to_datetime(df["fecha_de_beneficio"], dayfirst = True)
+    df.monto_del_credito = df.monto_del_credito.astype(float)
+    
     df.drop_duplicates(inplace=True)
 
     return df
+
 
 
