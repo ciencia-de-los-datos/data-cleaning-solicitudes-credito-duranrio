@@ -22,7 +22,6 @@ def clean_data():
         df[col] = df[col].apply(lambda x: str(x).replace("-"," ").replace("_"," "))
     
     df["monto_del_credito"] = df["monto_del_credito"].apply(lambda x: str(x).strip("$").strip().replace(".00","").replace(",",""))
-
     df.fecha_de_beneficio = pd.to_datetime(df["fecha_de_beneficio"], dayfirst = True)
     df.monto_del_credito = df.monto_del_credito.astype(float)
     df.drop_duplicates(inplace=True)
